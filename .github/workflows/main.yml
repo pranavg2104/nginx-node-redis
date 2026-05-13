@@ -43,7 +43,7 @@ jobs:
             - name: Fetch Public IP
               id: ec2_pub_ip
               run: |
-                EC2_PUBLIC_IP=${terraform output -raw public_ip}
+                EC2_PUBLIC_IP=$(terraform output -raw public_ip)
                 echo "public_ip=$EC2_PUBLIC_IP" >> $GITHUB_OUTPUT
 
             - name: Health Check App
