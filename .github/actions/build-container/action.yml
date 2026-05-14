@@ -20,12 +20,12 @@ runs:
   using: composite
 
   steps:
-    - name: Set up AWS CLI
-      run: |
-        export AWS_ACCESS_KEY_ID=${{ inputs.aws-access-key-id }}
-        export AWS_SECRET_ACCESS_KEY=${{ inputs.aws-secret-access-key }}
-        export AWS_DEFAULT_REGION=${{ inputs.aws-region }}
-      shell: bash
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}
       
     - name: Docker Login
       run: aws ecr get-login-password --region ${{ inputs.aws-region }} | docker login --username AWS --password-stdin ${{ inputs.aws-account-id }}.dkr.ecr.${{ inputs.aws-region }}.amazonaws.com
