@@ -11,6 +11,9 @@ services:
     hostname: web1
     ports:
       - '81:5000'
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
   web2:
     restart: on-failure
     image: 876225477961.dkr.ecr.ap-south-1.amazonaws.com/nginx-node-redis/web:latest
@@ -18,6 +21,9 @@ services:
     hostname: web2
     ports:
       - '82:5000'
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
   nginx:
     image: 876225477961.dkr.ecr.ap-south-1.amazonaws.com/nginx-node-redis/nginx:latest
     build: ./nginx
