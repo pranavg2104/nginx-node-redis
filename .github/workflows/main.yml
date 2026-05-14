@@ -1,4 +1,4 @@
-name: Terraform Deployment
+name: main
 
 on:
     push: 
@@ -7,56 +7,9 @@ on:
         branches: ["main"]
 
 jobs:
-    terraform:
+    docker:
         runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: terra-config
-
-        env:
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            AWS_DEFAULT_REGION: ap-south-1
 
         steps:
-            - name: Checkout
-              uses: actions/checkout@v3
 
-            - name: Setup Terraform
-              uses: hashicorp/setup-terraform@v3
-
-            - name: Terraform INIT
-              run: terraform init
-            
-            - name: Terraform Validate
-              run: terraform validate
-
-            - name: Terraform Plan
-              run: terraform plan -out=tfplan
-
-            - name: Terraform Apply
-              run: terraform apply --auto-approve tfplan
-            
-            - name: Wait for the instance to start
-              run: sleep 90
-            
-            - name: Fetch Public IP
-              id: ec2_pub_ip
-              run: |
-                EC2_PUBLIC_IP=$(terraform output -raw public_ip)
-                echo "public_ip=$EC2_PUBLIC_IP" >> $GITHUB_OUTPUT
-
-            # - name: Health Check App
-            #   run: |
-            #     echo "Checking app at http://${{steps.ec2_pub_ip.outputs.public_ip}}"
-            #     curl -f http://${{steps.ec2_pub_ip.outputs.public_ip}}" || (echo "App not responding" && exit 1)
-
-            - name: Keep App Alive
-              run: |
-                echo "Running the App"
-                sleep 600
-            
-            - name: Terraform Destroy
-              if: always()
-              run: terraform destroy --auto-approve
- 
+            - uses: ./.github/actions/docker.yml
