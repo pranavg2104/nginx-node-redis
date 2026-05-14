@@ -1,0 +1,41 @@
+name: Docker Compose Build and Deploy
+description: Build Docker images, push to ECR, and deploy to EC2 via Terraform
+
+inputs:
+  aws-access-key-id:
+    description: AWS Access Key ID
+    required: true
+  aws-secret-access-key:
+    description: AWS Secret Access Key
+    required: true
+  aws-region:
+    description: AWS region
+    required: false
+    default: 'ap-south-1'
+  aws-account-id:
+    description: AWS account ID
+    required: true
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Set up AWS CLI
+      run: |
+        export AWS_ACCESS_KEY_ID=${{ inputs.aws-access-key-id }}
+        export AWS_SECRET_ACCESS_KEY=${{ inputs.aws-secret-access-key }}
+        export AWS_DEFAULT_REGION=${{ inputs.aws-region }}
+      shell: bash
+      
+    - name: Docker Login
+      run: aws ecr get-login-password --region ${{ inputs.aws-region }} | docker login --username AWS --password-stdin ${{ inputs.aws-account-id }}.dkr.ecr.${{ inputs.aws-region }}.amazonaws.com
+      shell: bash
+    
+    - name: Docker Compose Build
+      run: docker compose -f compose.yml build
+      shell: bash
+    
+    - name: Docker Compose Push
+      run: docker compose push
+      shell: bash
+            
