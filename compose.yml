@@ -6,20 +6,20 @@ services:
       - '6379:6379'
   web1:
     restart: on-failure
-    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/nginx-node-redis/web:latest
+    image: 876225477961.dkr.ecr.ap-south-1.amazonaws.com/nginx-node-redis/web:latest
     build: ./web
     hostname: web1
     ports:
       - '81:5000'
   web2:
     restart: on-failure
-    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/nginx-node-redis/web:latest
+    image: 876225477961.dkr.ecr.ap-south-1.amazonaws.com/nginx-node-redis/web:latest
     build: ./web
     hostname: web2
     ports:
       - '82:5000'
   nginx:
-    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/nginx-node-redis/nginx:latest
+    image: 876225477961.dkr.ecr.ap-south-1.amazonaws.com/nginx-node-redis/nginx:latest
     build: ./nginx
     ports:
     - '80:80'
